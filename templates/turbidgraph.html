@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>pH Value Line Graph</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
+
+      canvas {
+        max-width: 50%;
+        max-height: 50%;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <header>
+    {% include 'header.html' %}
+  </header>
+  <body>
+    <h1 style="margin-bottom: 20px;">pH Value Line Graph</h1>
+    <canvas id="chartCanvas" width="50%" height="50%"></canvas>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        // Retrieve the pH value data and time labels from Flask
+        var turbidity_data = {{ turbidity_data | tojson }};
+        var timeLabels = {{ time_labels | tojson }};
+        var turbidCric = {{ turbidCric }};
+
+        // Create the line graph using Chart.js
+        var ctx = document.getElementById('chartCanvas').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: timeLabels,
+            datasets: [
+              {
+                label: 'Turbidity Value',
+                data: turbidity_data,
+                borderColor: 'black',
+                fill: false
+              },
+              {
+                label: 'Crictical Value',
+                data: turbidCric,
+                borderColor: 'red',
+                fill: false
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              x: {
+                display: true,
+                title: {
+                  display: true,
+                  text: 'Time'
+                }
+              },
+              y: {
+                display: true,
+                title: {
+                  display: true,
+                  text: 'Turbidity Value'
+                },
+                ticks: {
+                  stepSize: 1
+                }
+              }
+            },
+            options: {
+                responsive: true,
+                scales: {
+                  x: {
+                    display: true,
+                    title: {
+                      display: true,
+                      text: 'Day'
+                    }
+                  },
+                  y: {
+                    display: true,
+                    title: {
+                      display: true,
+                      text: 'Value'
+                    }
+                  }
+                }
+              }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
